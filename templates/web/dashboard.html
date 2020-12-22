@@ -1,0 +1,116 @@
+{% extends 'web/index.html' %}
+{% load static %}
+{% block content %}
+<!-- BEGIN: Content-->
+    <div class="app-content content">
+        <div class="content-overlay"></div>
+        <div class="header-navbar-shadow"></div>
+        <div class="content-wrapper">
+            <div class="content-header row">
+            </div>
+            <div class="content-body">
+                <!-- Dashboard Analytics Start -->
+                <section id="dashboard-analytics">
+                    
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h4 class="mb-0">Analytics</h4>
+                                </div>
+                                <div class="card-content">
+                                    <div class="table-responsive mt-1">
+                                        <table class="table table-hover-animation mb-0">
+                                            <thead>
+                                                <tr>
+                                           
+                                                    <th>SOURCE</th>
+                                                    
+                                                   
+                                                    <th>NAME</th>
+                                              
+                                                    <th>EMAIL</th>
+                                                    <th>ABOUT</th>
+                                                    <th>WEBSITE</th>
+                                                    <th>PHONE</th>
+                                                   {% comment %} <th>CONNECTED AT</th> {% endcomment %}
+                                                    <th>UPDATE</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody id="pagelist">
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+                <!-- Dashboard Analytics end -->
+
+            </div>
+        </div>
+    </div>
+    <!-- END: Content-->
+
+
+     
+
+                                            <!-- Modal -->
+                                            <div class="modal fade text-left" id="inlineForm" tabindex="-1" role="dialog" aria-labelledby="myModalLabel33" aria-hidden="true">
+                                                <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
+                                                    <div class="modal-content">
+                                                        <div class="modal-header">
+                                                            <h4 class="modal-title" id="myModalLabel33"><span id="ptitle"></span></h4>
+                                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                                <span aria-hidden="true">&times;</span>
+                                                            </button>
+                                                        </div>
+                                                        <form id="basicform"  method="POST">{% csrf_token %}
+                                                            <div class="modal-body">
+                                                                {% comment %} <label>Email: </label> {% endcomment %}
+                                                                <div class="form-group" hidden>
+                                                                    {% comment %} <input id="pmail" type="email" placeholder="Email Address" class="form-control" required> {% endcomment %}
+                                                                     <input type="number" hidden id="pid" class="form-control" required>
+                                                                </div>
+
+                                                                <label>Phone: </label>
+                                                                <div class="form-group">
+                                                                    <input type="text" id="pphone" placeholder="Phone" class="form-control" required>
+                                                                </div>
+
+                                                                  <label>About: </label>
+                                                                <div class="form-group">
+                                                                    <textarea id="pabout"  placeholder="Address" class="form-control" required></textarea>
+                                                                </div>
+
+                                                                 <label>Website: </label>
+                                                                <div class="form-group">
+                                                                    <input id="pweb" type="url" placeholder="Phone" class="form-control" required>
+                                                                </div>
+
+                                                               
+                                                            </div>
+                                                            <div class="modal-footer">
+                                                                <button type="submit" class="btn btn-primary">Update</button>
+                                                            </div>
+                                                        </form>
+                                                    </div>
+                                                </div>
+                                            </div>
+  
+{% endblock %}
+
+{% block scripts %}
+<script>
+    $( document ).ready(function() {
+            getpages();
+
+    
+});
+
+
+
+
+</script>
+{% endblock %}

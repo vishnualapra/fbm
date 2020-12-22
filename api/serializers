@@ -1,0 +1,117 @@
+from rest_framework import serializers
+from django.contrib.auth import get_user_model
+from rest_framework import exceptions, response
+from django.contrib.auth import authenticate
+from rest_framework.validators import UniqueValidator
+from webadmin import models
+from rest_framework.response import Response
+from webadmin.models import Level
+from webadmin.models import SubLevel
+import random
+import string
+from datetime import datetime, date
+from django.db.models import Sum
+
+def getcourseprice(dat):
+    data = models.Submodule.objects.filter(active=True, is_free=False, module__sub_level_id=dat)
+    sum = 0
+    for i in data:
+        sum = sum + i.price
+    return sum
+
+
+def getsubjectprice(dat):
+    data = models.Submodule.objects.filter(active=True, is_free=False, module_id=dat)
+    sum = 0
+    for i in data:
+        sum = sum + i.selling_price
+    return sum
+
+
+class LoginSerializer(serializers.Serializer):
+    username = serializers.CharField()
+    password = serializers.CharField()
+
+    def validate(self, data):
+        username = data.get('username')
+        password = data.get('password')
+        if username and password:
+            user = authenticate(username=username, password=password)
+            if user:
+                if user.is_active:
+                    data["user"] = user
+
+                else:
+                    msg = "Account deactivated"
+                    raise exceptions.ValidationError(msg)
+            else:
+                try:
+                    User = get_user_model()
+                    userdata = User.objects.get(email=username)
+                    user = authenticate(username=userdata.username, password=password)
+                    if user.is_active:
+                        data["user"] = user
+
+                    else:
+                        msg = "Account deactivated"
+                        raise exceptions.ValidationError(msg)
+                except Exception as e:
+                    msg = "Wrong Credinails"
+                    raise exceptions.ValidationError(msg)
+        else:
+            msg = "Must provide user name and password"
+            raise exceptions.ValidationError(msg)
+        return data
+
+
+class RegisterSerializer(serializers.ModelSerializer):
+    User = get_user_model()
+    email = serializers.EmailField(
+        required=True,
+        validators=[UniqueValidator(queryset=User.objects.all())]
+    )
+    username = serializers.CharField(
+        validators=[UniqueValidator(queryset=User.objects.all())]
+    )
+    password = serializers.CharField(min_length=8)
+    mobile_no = serializers.CharField(max_length=15,
+                                      required=True,
+                                      validators=[UniqueValidator(queryset=User.objects.all())])
+
+    def validate(self, data):
+        username = data.get('username')
+        password = data.get('password')
+        email = data.get('email')
+        mobile_no = data.get('mobile_no')
+        if username and password and email and mobile_no:
+            pass
+        else:
+            msg = "Required all specific details"
+            a = exceptions.ValidationError(msg)
+            return Response('hi')
+        return data
+
+    def create(self, validated_data):
+        User = get_user_model()
+        min_char = 4
+        max_char = 8
+        allchar = string.ascii_lowercase + string.ascii_uppercase + string.digits
+        referr = "".join(random.choice(allchar) for x in range(random.randint(min_char, max_char)))
+        user = User.objects.create_user(username=validated_data['username'], email=validated_data['email'],
+                                        password=validated_data['password'], mobile_no=validated_data['mobile_no'],
+                                        account_type="User", mobile_token=random.randint(100000, 999999),
+                                        last_name=referr, full_name=validated_data['username'])
+        return user
+
+    class Meta:
+        User = get_user_model()
+        model = User
+        fields = ('id', 'username', 'email', 'password', 'mobile_no')
+
+
+class CategorySerializer(serializers.ModelSerializer):
+    name = serializers.CharField(source='course_title')
+
+    class Meta:
+        model = models.CourseCategories
+        fields = ('id', 'name')
