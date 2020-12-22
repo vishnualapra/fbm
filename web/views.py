@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, HttpResponse
 import requests
 import json
 
@@ -38,3 +38,7 @@ def index(request):
 @login_required
 def dashboard(request):
     return render(request,'web/dashboard.html',{})
+
+
+def privacy(request):
+    return HttpResponse('pricacy policy')
