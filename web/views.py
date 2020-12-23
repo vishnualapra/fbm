@@ -18,9 +18,9 @@ def login_required(function):
 
             response = requests.request("POST", url, headers=headers, data=payload)
             data = json.loads(response.text)
-            if data["status"] == True:
+            if "status" in data and data["status"] == True:
                 return function(request, *args, **kwargs)
-            else:
+            elif "detail" in data:
                 response = HttpResponseRedirect('/web/login/')
                 response.delete_cookie('token')
                 return response

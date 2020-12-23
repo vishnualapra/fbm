@@ -20,5 +20,6 @@ urlpatterns = [
     path('login/',views.login_view),
     path('dashboard/',views.dashboard),
     path('',views.index),
+    path('privacy/',views.privacy),
     
 ]

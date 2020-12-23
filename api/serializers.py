@@ -19,7 +19,7 @@ class PageSerializer(serializers.ModelSerializer):
         print(access_token_info)
         details = {}
         if "about" in access_token_info:
-            details["about"] = access_token_info["about"]
+            details["about"] = str(access_token_info["about"])
         else:
             details["about"] = ""
 
